@@ -3,26 +3,55 @@ var router = express.Router();
 var path = require('path');
 
 // Connect string to MySQL
-var mysql = require('mysql');
+// var mysql = require('mysql');
+var oracledb = require('oracledb');
 
-var connection = mysql.createConnection({
-  host: 'cis550proj.ct3uunzu1j29.us-east-2.rds.amazonaws.com',
+
+function sendQuery(queryString, callback){
+  oracledb.getConnection({
   user: 'cis550proj',
   password: 'cis550proj',
-  database: 'Oracle-RDS'
+  connectString: '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)'+
+  '(HOST = cis550proj.ct3uunzu1j29.us-east-2.rds.amazonaws.com)'+
+  '(PORT = 1521))(CONNECT_DATA =(SID = PENNTR)))'
+    }, function(err, connection) {
+    if (err) {
+      console.error(err.message);
+      return;
+    }
+    console.log("\nQuery : "+queryString);
+    connection.execute(queryString, [],{ maxRows: 1000 },
+    function(err, result) {
+      if (err) {
+        console.error(err.message);
+        doRelease(connection);
+        return;
+      }
+      callback(result);
+      doRelease(connection);
+    });
+  });
+}
+
+sendQuery("select * from city", function(result){
+  console.log(result);
 });
 
-connection.connect(function(err) {
-  if (err) {
-    console.log("Error Connection to DB" + err);
-    return;
-  }
-  console.log("Connection established...");
-});
+function doRelease(connection) {
+  connection.release(
+    function(err) {
+      if (err) {console.error(err.message);}
+    }
+  );
+}
 
 /* GET home page. */
 router.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, '../', 'views', 'login.html'));
+});
+
+router.get('/start', function(req, res) {
+  res.sendFile(path.join(__dirname, '../', 'views', 'start.html'));
 });
 
 router.get('/dashboard', function(req, res) {
