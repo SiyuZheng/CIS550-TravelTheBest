@@ -101,38 +101,24 @@ router.post('/login', function(req, res) {
   });
 });
 
-router.get('/user', function(req, res) {
-    var query = "SELECT * FROM User"; /* Write your query here and uncomment line 21 in javascripts/app.js*/
-    connection.query(query, function(err, rows, fields) {
-      if (err) console.log('insert error: ', err);
-      else {
-        res.json(rows);
-      }
-    });
-});
-
-router.get('/genre', function(req, res) {
-    var query = "SELECT DISTINCT genre FROM Genres"; /* Write your query here and uncomment line 21 in javascripts/app.js*/
-    connection.query(query, function(err, rows, fields) {
-      if (err) console.log('insert error: ', err);
-      else {
-        res.json(rows);
-      }
-    });
-});
-
-router.get('/genre/:customParameter', function(req, res) {
-  var para = req.params.customParameter;    
-  var query = "select title, rating, vote_count from Movies m join"
-  + " Genres g on m.id = g.movie_id and g.genre = ? order by rating "
-  + "desc, vote_count desc limit 10;";
-  var values = [para];
-  connection.query(query, para, function(err, rows, fields) {
-    // console.log("rows", rows);
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
+router.post('/findflight', function(req, res) {
+    console.log(req.body.depart);
+  var query = "select f.airline, f.airline_id, score from flight f"
+ + " join airport a1 on a1.IATA = f.depart"
+ + " join airport a2 on a2.IATA = f.arrival"
+ + " join airlinecode ac on ac.airline = f.airline"
+ + " join airlinerating ar on upper(ar.airline_name) = upper(ac.airline_name)" 
+ + " where lower(a1.city) = \'" + req.body.depart + "\' and lower(a2.city) = \'" + req.body.arrival
+ + "\' order by score desc"
++ " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
+  console.log(query);
+  sendQuery(query, function(result) {
+    console.log(result);
+    res.json(result);
+    // if (err) console.log(err);
+    // else {
+    //   res.json(rows);
+    // }
   });
 });
 

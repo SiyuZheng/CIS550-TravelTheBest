@@ -1,4 +1,30 @@
 var app = angular.module('angularjsNodejsTutorial', []);
+app.controller('flightController', function($scope, $http) {
+  $scope.findFlight = function() {
+    // To check in the console if the variables are correctly storing the input:
+    // console.log($scope.username, $scope.password);
+
+    var request = $http({
+      url: '/findflight',
+      method: "POST",
+      data: {
+        'depart': $scope.depart.toLowerCase(),
+        'arrival': $scope.arrival.toLowerCase()
+      }
+    })
+
+    request.success(function(response) {
+      // success
+      console.log(response);
+      
+    });
+    request.error(function(err) {
+      // failed
+      console.log("error: ", err);
+    });
+
+  };
+});
 app.controller('loginController', function($scope, $http) {
   $scope.verifyLogin = function() {
     // To check in the console if the variables are correctly storing the input:

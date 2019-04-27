@@ -12,11 +12,15 @@
   </head>
 
   <body>
-    <div class="heading">CIS550 HW2</div>
-    <div class="container login-container" ng-controller="loginController">
-      <input type="text" class="input username" placeholder="Username" ng-model="username" />
-      <input type="password" class="input password" placeholder="Password" ng-model="password" />
-      <button type="button" class="login-button" name="Login" ng-click="verifyLogin()">Login</button>
+    <div class="heading">Find a flight</div>
+    <div class="container login-container" ng-controller="flightController">
+      <input type="text" class="input depart" placeholder="Depart City" ng-model="depart" />
+      <input type="text" class="input arrival" placeholder="Arrival City" ng-model="arrival" />
+      <button type="button" class="flight-button" name="Flight" ng-click="findFlight()">Find a flight</button>
+      <table>    
+      <tr ng-repeat = "x in flights">
+      <td><a ng-if='x.Website != "N/A"' href="{{ x.Website }}" target="_blank"><img ng-src="{{ x.Poster }}"></a><img ng-if='x.Website == "N/A"' ng-src="{{ x.Poster }}"></td>
+          <td>{{ x.Title }}</td>
     </div>
 
     <!-- Include these before the end of body tag in every HTML file -->
