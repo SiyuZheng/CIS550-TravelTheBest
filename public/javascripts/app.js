@@ -190,6 +190,24 @@ app.controller('destinationController', function($scope, $http, sharedService) {
     window.location.href = "/attractions";
     // sharedService.add($scope.arrival);
   };
+
+  $scope.getCityImages = function() {
+    var city = localStorage.getItem("city");
+    var request = $http({
+      url: "https://api.teleport.org/api/urban_areas/slug:" + city + "/images/",
+      method: "GET",
+    })
+    request.success(function(response) {
+    // success
+    if (response) {
+        $scope.imgsrc = response.photos[0].image.web;     
+    }
+    });
+    request.error(function(err) {
+      // failed
+      console.log("error: ", err);
+    });
+  }
 });
 
 app.controller('hotelsController', function($scope, $http) {
