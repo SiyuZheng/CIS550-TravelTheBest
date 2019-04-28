@@ -33,10 +33,6 @@ function sendQuery(queryString, callback){
   });
 }
 
-sendQuery("select * from city", function(result){
-  console.log(result);
-});
-
 function doRelease(connection) {
   connection.release(
     function(err) {
@@ -111,14 +107,8 @@ router.post('/findflight', function(req, res) {
  + " where lower(a1.city) = \'" + req.body.depart + "\' and lower(a2.city) = \'" + req.body.arrival
  + "\' order by score desc"
 + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
-  console.log(query);
   sendQuery(query, function(result) {
-    console.log(result);
     res.json(result);
-    // if (err) console.log(err);
-    // else {
-    //   res.json(rows);
-    // }
   });
 });
 

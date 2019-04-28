@@ -1,4 +1,13 @@
 var app = angular.module('angularjsNodejsTutorial', []);
+app.controller('mapController', function ($scope) {
+    $scope.initialize = function() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+             center: {lat: -34.397, lng: 150.644},
+             zoom: 8
+          });
+       }         
+       google.maps.event.addDomListener(window, 'load', $scope.initialize);  
+});
 app.controller('flightController', function($scope, $http) {
   $scope.findFlight = function() {
     // To check in the console if the variables are correctly storing the input:
@@ -16,14 +25,32 @@ app.controller('flightController', function($scope, $http) {
     request.success(function(response) {
       // success
       console.log(response);
-      
+
     });
     request.error(function(err) {
       // failed
       console.log("error: ", err);
     });
-
   };
+  $scope.findCityLatLng = function(city) {
+    var request = $http({
+      url: '/findCityLatLng',
+      method: "POST",
+      data: {
+        'city': city.toLowerCase(),
+      }
+    })
+
+    request.success(function(response) {
+      // success
+      console.log(response);
+
+    });
+    request.error(function(err) {
+      // failed
+      console.log("error: ", err);
+    });
+  }
 });
 app.controller('loginController', function($scope, $http) {
   $scope.verifyLogin = function() {
