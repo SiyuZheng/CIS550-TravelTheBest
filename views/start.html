@@ -27,13 +27,9 @@
     <div class="container login-container" ng-controller="flightController">
       <input type="text" class="input depart" placeholder="Depart City" ng-model="depart" />
       <input type="text" class="input arrival" placeholder="Arrival City" ng-model="arrival" />
-      <button type="button" class="flight-button" name="Flight" ng-click="findFlight()">Find a flight</button>
-      <div ng-app="angularjsNodejsTutorial" id="map"></div>
-      <table>    
-      <tr ng-repeat = "x in flights">
-      <td><a ng-if='x.Website != "N/A"' href="{{ x.Website }}" target="_blank"><img ng-src="{{ x.Poster }}"></a><img ng-if='x.Website == "N/A"' ng-src="{{ x.Poster }}"></td>
-          <td>{{ x.Title }}</td>
-      </table>
+      <button type="button" class="flight-button" name="Flight" ng-click="deleteAllMarkers(); findFlight(); findCityLatLng();">Find a flight</button>
+      <div ng-app="angularjsNodejsTutorial" id="map"></div>  
+      <div ng-repeat = "x in cities"><div></div><h3>{{ x }}</h3></div>
     </div>
 
     <!-- Include these before the end of body tag in every HTML file -->
@@ -49,10 +45,8 @@
           zoom: 1
         });
       };
-
-
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSOaLepF_xfq-6q61UzJ_Mpd8c7i8N-E8&callback=initMap"
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSOaLepF_xfq-6q61UzJ_Mpd8c7i8N-E8&callback=initMap&language=en&region=US"
   type="text/javascript"></script>
   </body>
 

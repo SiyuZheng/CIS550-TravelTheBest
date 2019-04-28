@@ -8,11 +8,26 @@ app.controller('mapController', function ($scope) {
        }         
        google.maps.event.addDomListener(window, 'load', $scope.initialize);  
 });
-app.controller('flightController', function($scope, $http) {
-  $scope.findFlight = function() {
-    // To check in the console if the variables are correctly storing the input:
-    // console.log($scope.username, $scope.password);
 
+var markers = [];
+var addMarker = function(latlng) {
+  var marker = new google.maps.Marker({
+          position: {lat: parseFloat(latlng.lat), lng : parseFloat(latlng.lon)},
+          map: map,
+  });
+  markers.push(marker);
+}
+
+
+
+app.controller('flightController', function($scope, $http) {
+  $scope.deleteAllMarkers = function() {
+      for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+      }
+      markers = [];
+  }
+  $scope.findFlight = function() {
     var request = $http({
       url: '/findflight',
       method: "POST",
@@ -23,31 +38,43 @@ app.controller('flightController', function($scope, $http) {
     })
 
     request.success(function(response) {
-      // success
       console.log(response);
-
     });
     request.error(function(err) {
-      // failed
       console.log("error: ", err);
     });
   };
-  $scope.findCityLatLng = function(city) {
-    var request = $http({
+  
+  $scope.findCityLatLng = function() {
+    $scope.cities = [];
+    var request1 = $http({
       url: '/findCityLatLng',
       method: "POST",
       data: {
-        'city': city.toLowerCase(),
+        'city': $scope.depart.toLowerCase()
       }
     })
-
-    request.success(function(response) {
-      // success
-      console.log(response);
-
+    request1.success(function(response) {
+      var latlng1= {lat: response.rows[0][0], lon:response.rows[0][1]};
+      $scope.cities.push(latlng1);
+      addMarker(latlng1);
     });
-    request.error(function(err) {
-      // failed
+    request1.error(function(err) {
+      console.log("error: ", err);
+    });
+    var request2 = $http({
+      url: '/findCityLatLng',
+      method: "POST",
+      data: {
+        'city': $scope.arrival.toLowerCase()
+      }
+    })
+    request2.success(function(response) {
+      var latlng2 = {lat: response.rows[0][0], lon:response.rows[0][1]};
+      $scope.cities.push(latlng2);
+      addMarker(latlng2);
+    });
+    request2.error(function(err) {
       console.log("error: ", err);
     });
   }

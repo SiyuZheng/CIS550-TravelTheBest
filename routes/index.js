@@ -98,7 +98,6 @@ router.post('/login', function(req, res) {
 });
 
 router.post('/findflight', function(req, res) {
-    console.log(req.body.depart);
   var query = "select f.airline, f.airline_id, score from flight f"
  + " join airport a1 on a1.IATA = f.depart"
  + " join airport a2 on a2.IATA = f.arrival"
@@ -107,6 +106,17 @@ router.post('/findflight', function(req, res) {
  + " where lower(a1.city) = \'" + req.body.depart + "\' and lower(a2.city) = \'" + req.body.arrival
  + "\' order by score desc"
 + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/findCityLatLng', function(req, res) {
+  console.log(req.body.city);
+  var query = "select lattitude, longitude from city c where lower(c.city) = \'" 
+  + req.body.city
+ + "\' OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY";
+ console.log(query);
   sendQuery(query, function(result) {
     res.json(result);
   });
