@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CIS550 Project</title>
+    <title>CIS550 HW2: Dashboard</title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <script src="javascripts/app.js" type="text/javascript"></script>
@@ -15,25 +15,12 @@
   </head>
 
   <body>
-    <div class="heading">Destinations</div>
-    <div class="container login-container" ng-controller="destinationController">
-<<<<<<< HEAD
-      <div ng-init ="getcategories()"></div>
-||||||| merged common ancestors
-      <a ng-init ="getcategories()"></a>
-=======
+    <div class="heading">Restaurants</div>
+    <div class="container login-container" ng-controller="restaurantsController">
     <a ng-init ="getcategories()"></a>
     <a ng-init ="passcategories()"></a>
-    <a ng-init ="pass2categories()"></a>
-    <div class="jumbotron">
-      <div class="h5">Hotels</div>
-      <button type="button" class="hotels-button" name="hotels" ng-click="findhotels()">See more about Hotels</button>
-    </div>
-
-
     <div class="jumbotron">
       <div class="h5">Restaurants</div>
-      <button type="button" class="restaurants-button" name="restaurants" ng-click="findrestaurants()">See more about Restaurants</button>
       <div ng-if=restaurants>
         <table>
           <tr>
@@ -50,27 +37,6 @@
           </tr>
         </table>
       </div>
-    </div>
-
-    <div class="jumbotron">
-      <div class="h5">Attractions</div>
-      <button type="button" class="attractions-button" name="attractions" ng-click="findattractions()">See more about Attractions</button>
-      <div ng-if=attractions>
-        <table>
-          <tr>
-            <th>Place</th>
-            <th>Address</th>
-          </tr>
-          <tr ng-repeat = "x in attractions">
-            <td>{{ x[0] }}</td>
-            <td>{{ x[1] }}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
->>>>>>> origin/yongyi
-
-    </div>
     </div>
 
     <!-- Include these before the end of body tag in every HTML file -->
