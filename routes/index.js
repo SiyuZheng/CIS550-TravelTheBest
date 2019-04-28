@@ -74,6 +74,11 @@ router.get('/posters', function(req, res) {
   res.sendFile(path.join(__dirname, '../', 'views', 'posters.html'));
 });
 
+
+router.get('/destination', function(req, res) {
+  res.sendFile(path.join(__dirname, '../', 'views', 'destination.html'));
+});
+
 // To add a new page, use the templete below
 /*
 router.get('/routeName', function(req, res) {
@@ -113,12 +118,23 @@ router.post('/findflight', function(req, res) {
 + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
   console.log(query);
   sendQuery(query, function(result) {
-    // console.log(result);
     res.json(result);
-    // if (err) console.log(err);
-    // else {
-    //   res.json(rows);
-    // }
+  });
+});
+
+router.get('/destination/:city', function(req, res) {
+  var myData = req.params.destination;
+  var query = "select f.airline, f.airline_id, score from flight f"
+ + " join airport a1 on a1.IATA = f.depart"
+ + " join airport a2 on a2.IATA = f.arrival"
+ + " join airlinecode ac on ac.airline = f.airline"
+ + " join airlinerating ar on upper(ar.airline_name) = upper(ac.airline_name)" 
+ + " where lower(a1.city) = \'" + req.body.depart + "\' and lower(a2.city) = \'" + req.body.arrival
+ + "\' order by score desc"
++ " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
   });
 });
 

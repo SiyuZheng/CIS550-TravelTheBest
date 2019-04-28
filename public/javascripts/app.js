@@ -1,5 +1,29 @@
 var app = angular.module('angularjsNodejsTutorial', []);
-app.controller('flightController', function($scope, $http) {
+
+app.service('sharedService', function(){
+  var categories = []; 
+  this.add = function(incategories){
+    categories = incategories;
+  };
+  this.get = function(){
+    return categories;
+  };     
+});
+
+// app.service('sharedService', function () {
+//         var property = [];
+//         return {
+//             get: function () {
+//                 return property;
+//             },
+//             add: function(value) {
+//                 property = value;
+//             }
+//         };
+//     });
+
+app.controller('flightController', function($scope, $http, sharedService) {
+  $scope.categories = [];
   $scope.findFlight = function() {
     // To check in the console if the variables are correctly storing the input:
     // console.log($scope.username, $scope.password);
@@ -15,25 +39,38 @@ app.controller('flightController', function($scope, $http) {
 
     request.success(function(response) {
       // success
-      console.log(response.rows);
+      // console.log(response.rows);
       $scope.flights = response.rows;
     });
     request.error(function(err) {
       // failed
       console.log("error: ", err);
     });
-
+    // console.log($scope.arrival)
+    sharedService.add($scope.arrival); 
   };
+
+  $scope.searchdest = function() { 
+    window.location.href = "http://localhost:8081/destination"
+    $scope.categories = sharedService.get();
+    console.log($scope.categories)
+  };
+
 });
 
 
-
+app.controller('destinationController', function($scope, $http, sharedService) {
+   $scope.getcategories = function(){
+     $scope.categories = sharedService.get();
+     console.log($scope.categories)
+   }
+  
+});
 
 app.controller('loginController', function($scope, $http) {
   $scope.verifyLogin = function() {
     // To check in the console if the variables are correctly storing the input:
     // console.log($scope.username, $scope.password);
-
     var request = $http({
       url: '/login',
       method: "POST",
