@@ -15,8 +15,8 @@ app.controller('flightController', function($scope, $http) {
 
     request.success(function(response) {
       // success
-      console.log(response);
-      
+      console.log(response.rows);
+      $scope.flights = response.rows;
     });
     request.error(function(err) {
       // failed
@@ -25,6 +25,10 @@ app.controller('flightController', function($scope, $http) {
 
   };
 });
+
+
+
+
 app.controller('loginController', function($scope, $http) {
   $scope.verifyLogin = function() {
     // To check in the console if the variables are correctly storing the input:

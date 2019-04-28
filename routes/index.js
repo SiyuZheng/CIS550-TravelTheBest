@@ -113,7 +113,7 @@ router.post('/findflight', function(req, res) {
 + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
   console.log(query);
   sendQuery(query, function(result) {
-    console.log(result);
+    // console.log(result);
     res.json(result);
     // if (err) console.log(err);
     // else {
