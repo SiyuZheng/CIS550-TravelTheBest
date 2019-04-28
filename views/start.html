@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html ng-app="angularjsNodejsTutorial">
+<html lang="en" ng-app="angularjsNodejsTutorial">
 
   <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CIS550 Project</title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.js"></script>
-    <script src="javascripts/app.js" type="text/javascript"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="javascripts/app.js" type="text/javascript"></script>
     <!-- Custom styles for this template-->
     <link href="/stylesheets/common.css" rel="stylesheet">
-    <link href="/stylesheets/login.css" rel="stylesheet">
+    <link href="/stylesheets/dashboard.css" rel="stylesheet">
     <style>
       #map {
         height: 300px;
@@ -20,6 +23,8 @@
         padding: 0;
       }
     </style>
+    <link href="/stylesheets/login.css" rel="stylesheet">
+    <link href="/stylesheets/dashboard.css" rel="stylesheet">
   </head>
 
   <body>
@@ -29,8 +34,23 @@
       <input type="text" class="input arrival" placeholder="Arrival City" ng-model="arrival" />
       <button type="button" class="flight-button" name="Flight" ng-click="deleteAllMarkers(); findFlight(); findCityLatLng();">Find a flight</button>
       <div ng-app="angularjsNodejsTutorial" id="map"></div>  
-      <div ng-repeat = "x in cities"><div></div><h3>{{ x }}</h3></div>
-    </div>
+        <button type="button" class="search-button" name="searchdest" ng-click="searchdest()">Search for destination</button>
+        <div ng-if=flights>
+        <table>
+          <tr>
+            <th>Airline_Code</th>
+            <th>Flight_Number</th>
+            <th>Airline_Rating</th>
+          </tr>
+          <tr ng-repeat = "x in flights">
+            <td>{{ x[0] }}</td>
+            <td>{{ x[1] }}</td>
+            <td>{{ x[2] }}</td>
+            }
+          </tr>
+        </table>
+      </div>
+      </div>
 
     <!-- Include these before the end of body tag in every HTML file -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

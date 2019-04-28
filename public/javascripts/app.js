@@ -1,24 +1,13 @@
 var app = angular.module('angularjsNodejsTutorial', []);
-app.controller('mapController', function ($scope) {
-    $scope.initialize = function() {
-          var map = new google.maps.Map(document.getElementById('map'), {
-             center: {lat: -34.397, lng: 150.644},
-             zoom: 8
-          });
-       }         
-       google.maps.event.addDomListener(window, 'load', $scope.initialize);  
-});
 
 var markers = [];
-var addMarker = function(latlng) {
+var addMarker = function(pos) {
   var marker = new google.maps.Marker({
-          position: {lat: parseFloat(latlng.lat), lng : parseFloat(latlng.lon)},
+          position: pos,
           map: map,
   });
   markers.push(marker);
 }
-
-
 
 app.controller('flightController', function($scope, $http) {
   $scope.deleteAllMarkers = function() {
@@ -38,7 +27,8 @@ app.controller('flightController', function($scope, $http) {
     })
 
     request.success(function(response) {
-      console.log(response);
+      console.log(response.rows);
+      $scope.flights = response.rows;
     });
     request.error(function(err) {
       console.log("error: ", err);
@@ -55,30 +45,50 @@ app.controller('flightController', function($scope, $http) {
       }
     })
     request1.success(function(response) {
-      var latlng1= {lat: response.rows[0][0], lon:response.rows[0][1]};
+      var latlng1= {lat: response.rows[0][0], lng:response.rows[0][1]};
       $scope.cities.push(latlng1);
-      addMarker(latlng1);
+      var pos1 = {lat: parseFloat(latlng1.lat), lng : parseFloat(latlng1.lng)};
+      addMarker(pos1);
+      var request2 = $http({
+        url: '/findCityLatLng',
+        method: "POST",
+        data: {
+          'city': $scope.arrival.toLowerCase()
+        }
+      })
+      request2.success(function(response) {
+        var latlng2 = {lat: response.rows[0][0], lng:response.rows[0][1]};
+        $scope.cities.push(latlng2);
+        var pos2 = {lat: parseFloat(latlng2.lat), lng : parseFloat(latlng2.lng)}
+        addMarker(latlng2);
+        var lat_min = Math.min(pos1.lat, pos2.lat); 
+        var lat_max = Math.max(pos1.lat, pos2.lat); 
+        var lng_min = Math.min(pos1.lng, pos2.lng); 
+        var lng_max = Math.min(pos1.lng, pos2.lng);
+        map.setCenter(new google.maps.LatLng(
+          ((lat_max + lat_min) / 2.0),
+          ((lng_max + lng_min) / 2.0)
+        )); 
+        map.fitBounds(new google.maps.LatLngBounds(
+        //bottom left
+        new google.maps.LatLng(lat_min, lng_min),
+        //top right
+        new google.maps.LatLng(lat_max, lng_max)
+        ));
+      });
+      request2.error(function(err) {
+        console.log("error: ", err);
+      });
     });
     request1.error(function(err) {
       console.log("error: ", err);
     });
-    var request2 = $http({
-      url: '/findCityLatLng',
-      method: "POST",
-      data: {
-        'city': $scope.arrival.toLowerCase()
-      }
-    })
-    request2.success(function(response) {
-      var latlng2 = {lat: response.rows[0][0], lon:response.rows[0][1]};
-      $scope.cities.push(latlng2);
-      addMarker(latlng2);
-    });
-    request2.error(function(err) {
-      console.log("error: ", err);
-    });
   }
 });
+
+
+
+
 app.controller('loginController', function($scope, $http) {
   $scope.verifyLogin = function() {
     // To check in the console if the variables are correctly storing the input:
