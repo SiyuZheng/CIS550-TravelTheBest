@@ -15,56 +15,15 @@
   </head>
 
   <body>
-    <div class="heading">Destinations</div>
-    <div class="container login-container" ng-controller="destinationController">
+    <div class="heading">Hotels</div>
+    <div class="container login-container" ng-controller="hotelsController">
     <a ng-init ="getcategories()"></a>
     <a ng-init ="passcategories()"></a>
     <a ng-init ="pass2categories()"></a>
     <div class="jumbotron">
       <div class="h5">Hotels</div>
-      <button type="button" class="hotels-button" name="hotels" ng-click="findhotels()">See more about Hotels</button>
     </div>
 
-
-    <div class="jumbotron">
-      <div class="h5">Restaurants</div>
-      <button type="button" class="restaurants-button" name="restaurants" ng-click="findrestaurants()">See more about Restaurants</button>
-      <div ng-if=restaurants>
-        <table>
-          <tr>
-            <th>Name</th>
-            <th>Categories</th>
-            <th>Stars</th>
-            <th>Review_Count</th>
-          </tr>
-          <tr ng-repeat = "x in restaurants">
-            <td>{{ x[0] }}</td>
-            <td>{{ x[1] }}</td>
-            <td>{{ x[2] }}</td>
-            <td>{{ x[3] }}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-
-    <div class="jumbotron">
-      <div class="h5">Attractions</div>
-      <button type="button" class="attractions-button" name="attractions" ng-click="findattractions()">See more about Attractions</button>
-      <div ng-if=attractions>
-        <table>
-          <tr>
-            <th>Place</th>
-            <th>Address</th>
-          </tr>
-          <tr ng-repeat = "x in attractions">
-            <td>{{ x[0] }}</td>
-            <td>{{ x[1] }}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-
-    </div>
     </div>
 
     <!-- Include these before the end of body tag in every HTML file -->

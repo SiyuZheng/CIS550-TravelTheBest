@@ -79,6 +79,18 @@ router.get('/destination', function(req, res) {
   res.sendFile(path.join(__dirname, '../', 'views', 'destination.html'));
 });
 
+router.get('/hotels', function(req, res) {
+  res.sendFile(path.join(__dirname, '../', 'views', 'hotels.html'));
+});
+
+router.get('/restaurants', function(req, res) {
+  res.sendFile(path.join(__dirname, '../', 'views', 'restaurants.html'));
+});
+
+router.get('/attractions', function(req, res) {
+  res.sendFile(path.join(__dirname, '../', 'views', 'attractions.html'));
+});
+
 // To add a new page, use the templete below
 /*
 router.get('/routeName', function(req, res) {
@@ -122,16 +134,41 @@ router.post('/findflight', function(req, res) {
   });
 });
 
-router.get('/destination/:city', function(req, res) {
-  var myData = req.params.destination;
-  var query = "select f.airline, f.airline_id, score from flight f"
- + " join airport a1 on a1.IATA = f.depart"
- + " join airport a2 on a2.IATA = f.arrival"
- + " join airlinecode ac on ac.airline = f.airline"
- + " join airlinerating ar on upper(ar.airline_name) = upper(ac.airline_name)" 
- + " where lower(a1.city) = \'" + req.body.depart + "\' and lower(a2.city) = \'" + req.body.arrival
- + "\' order by score desc"
-+ " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
+
+router.post('/destination/restaurants', function(req, res) {
+  console.log(req.body.destination);
+  var query = "select b.name,b.categories,b.stars, b.review_count"
+ + " from Business b"
+ + " where (b.stars>=4 and lower(b.city) like \'%"+ req.body.destination + "%\') and (upper(b.categories) like '%RESTAURANT%' or upper(b.categories) like '%FOOD%')"
+ + " order by b.review_count desc"
+ + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/destination/attractions', function(req, res) {
+  console.log(req.body.destination);
+  var query = "SELECT title,address from "
+ + " (SELECT * FROM attractions"
+ + " where lower(place) like \'%" + req.body.destination + "%\'"
+ + " ORDER BY DBMS_RANDOM.VALUE)"
+ + "WHERE  rownum <= 10" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
+
+router.post('/restaurants', function(req, res) {
+  console.log(req.body.destination);
+  var query = "select b.name,b.categories,b.stars, b.review_count"
+ + " from Business b"
+ + " where (b.stars>=4 and lower(b.city) like \'%"+ req.body.destination + "%\') and (upper(b.categories) like '%RESTAURANT%' or upper(b.categories) like '%FOOD%')"
+ + " order by b.review_count desc"
+ + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   console.log(query);
   sendQuery(query, function(result) {
     res.json(result);

@@ -1,5 +1,20 @@
 var app = angular.module('angularjsNodejsTutorial', []);
 
+// app.factory('sharedService', function(){
+//   var categories = []; 
+//   var addArgument = function(incategories){
+//     categories.push(incategories);
+//     // console.log(categories);
+//   };
+//   var getArgument = function(){
+//     return categories;
+//   }; 
+//   return {
+//     addArgument: addArgument,
+//     getArgument: getArgument
+//   };    
+// });
+
 app.service('sharedService', function(){
   var categories = []; 
   this.add = function(incategories){
@@ -10,24 +25,11 @@ app.service('sharedService', function(){
   };     
 });
 
-// app.service('sharedService', function () {
-//         var property = [];
-//         return {
-//             get: function () {
-//                 return property;
-//             },
-//             add: function(value) {
-//                 property = value;
-//             }
-//         };
-//     });
-
 app.controller('flightController', function($scope, $http, sharedService) {
   $scope.categories = [];
   $scope.findFlight = function() {
     // To check in the console if the variables are correctly storing the input:
     // console.log($scope.username, $scope.password);
-
     var request = $http({
       url: '/findflight',
       method: "POST",
@@ -47,23 +49,119 @@ app.controller('flightController', function($scope, $http, sharedService) {
       console.log("error: ", err);
     });
     // console.log($scope.arrival)
-    sharedService.add($scope.arrival); 
   };
 
   $scope.searchdest = function() { 
-    window.location.href = "http://localhost:8081/destination"
-    $scope.categories = sharedService.get();
-    console.log($scope.categories)
+    localStorage.setItem("city", $scope.arrival.toLowerCase());
+    window.location.href = "/destination";
+    // sharedService.add($scope.arrival);
   };
 
 });
 
 
 app.controller('destinationController', function($scope, $http, sharedService) {
+  $scope.categories = [];
    $scope.getcategories = function(){
-     $scope.categories = sharedService.get();
-     console.log($scope.categories)
+     // $scope.categories = sharedService.get();
+     var city = localStorage.getItem("city");
+     sharedService.add(city);
+     // console.log(city) 
    }
+
+  $scope.passcategories = function(){
+    $scope.categories = sharedService.get();
+      var request1 = $http({
+        url: '/destination/restaurants',
+        method: "POST",
+        data: {
+          'destination': $scope.categories
+        }
+      })
+      request1.success(function(response) {
+        // success
+        console.log(response);
+        $scope.restaurants = response.rows;
+      });
+      request1.error(function(err) {
+        // failed
+        console.log("error: ", err);
+      });
+  }
+
+    $scope.pass2categories = function(){
+    $scope.categories = sharedService.get();
+      var request1 = $http({
+        url: '/destination/attractions',
+        method: "POST",
+        data: {
+          'destination': $scope.categories
+        }
+      })
+      request1.success(function(response) {
+        // success
+        console.log(response);
+        $scope.attractions = response.rows;
+      });
+      request1.error(function(err) {
+        // failed
+        console.log("error: ", err);
+      });
+  }
+
+  $scope.findhotels = function() { 
+    // localStorage.setItem("city", $scope.arrival.toLowerCase());
+    window.location.href = "/hotels";
+    // sharedService.add($scope.arrival);
+  };
+
+  $scope.findrestaurants = function() { 
+    // localStorage.setItem("city", $scope.arrival.toLowerCase());
+    window.location.href = "/restaurants";
+    // sharedService.add($scope.arrival);
+  };
+
+  $scope.findattractions = function() { 
+    // localStorage.setItem("city", $scope.arrival.toLowerCase());
+    window.location.href = "/attractions";
+    // sharedService.add($scope.arrival);
+  };
+});
+
+app.controller('hotelsController', function($scope, $http) {
+
+});
+
+app.controller('restaurantsController', function($scope, $http, sharedService) {
+  $scope.categories = [];
+   $scope.getcategories = function(){
+     // $scope.categories = sharedService.get();
+     var city = localStorage.getItem("city");
+     sharedService.add(city);
+     // console.log(city) 
+   }
+  $scope.passcategories = function(){
+    $scope.categories = sharedService.get();
+      var request1 = $http({
+        url: '/restaurants',
+        method: "POST",
+        data: {
+          'destination': $scope.categories
+        }
+      })
+      request1.success(function(response) {
+        // success
+        console.log(response);
+        $scope.restaurants = response.rows;
+      });
+      request1.error(function(err) {
+        // failed
+        console.log("error: ", err);
+      });
+  }
+});
+
+app.controller('attractionsController', function($scope, $http) {
   
 });
 
