@@ -9,7 +9,34 @@ var addMarker = function(pos) {
   markers.push(marker);
 }
 
-app.controller('flightController', function($scope, $http) {
+app.factory('sharedService', function(){
+  var categories = []; 
+  var addArgument = function(incategories){
+    categories.push(incategories);
+    console.log(categories);
+  };
+  var getArgument = function(){
+    return categories;
+  }; 
+  return {
+    addArgument: addArgument,
+    getArgument: getArgument
+  };    
+});
+
+// app.service('sharedService', function () {
+//         var property = [];
+//         return {
+//             get: function () {
+//                 return property;
+//             },
+//             add: function(value) {
+//                 property = value;
+//             }
+//         };
+//     });
+
+app.controller('flightController', function($scope, $http, sharedService) {
   $scope.deleteAllMarkers = function() {
       for (var i = 0; i < markers.length; i++) {
           markers[i].setMap(null);
@@ -33,6 +60,36 @@ app.controller('flightController', function($scope, $http) {
     request.error(function(err) {
       console.log("error: ", err);
     });
+    // console.log($scope.arrival)
+    // sharedService.add($scope.arrival); 
+  };
+
+  $scope.searchdest = function() { 
+    // console.log(sharedService.getArgument($scope.arrival));
+    localStorage.setItem("city", JSON.stringify($scope.arrival));
+    window.location.href = "/destination";
+    sharedService.addArgument($scope.arrival);
+
+  //   var request = $http({
+  //     url: '/findbusiness',
+  //     method: "POST",
+  //     data: {
+  //       'city': $scope.arrival.toLowerCase()
+  //     }
+  // })
+
+  // request.success(function(response) {
+  //   // success
+  //   if (response) {
+  //     $scope.business = response;
+  //     console.log(response);
+  //     // window.location.href = "http://localhost:8081/destination";
+  //   }
+  // });
+  // request.error(function(err) {
+  //   // failed
+  //   console.log("error: ", err);
+  // });
   };
   
   $scope.findCityLatLng = function() {
@@ -64,7 +121,7 @@ app.controller('flightController', function($scope, $http) {
         var lat_min = Math.min(pos1.lat, pos2.lat); 
         var lat_max = Math.max(pos1.lat, pos2.lat); 
         var lng_min = Math.min(pos1.lng, pos2.lng); 
-        var lng_max = Math.min(pos1.lng, pos2.lng);
+        var lng_max = Math.max(pos1.lng, pos2.lng);
         map.setCenter(new google.maps.LatLng(
           ((lat_max + lat_min) / 2.0),
           ((lng_max + lng_min) / 2.0)
@@ -87,13 +144,19 @@ app.controller('flightController', function($scope, $http) {
 });
 
 
-
+app.controller('destinationController', function($scope, $http, sharedService) {
+   $scope.getcategories = function(){
+     $scope.categories = sharedService.getArgument();
+     var city = localStorage.getItem("city");
+     console.log(city);
+   }
+  
+});
 
 app.controller('loginController', function($scope, $http) {
   $scope.verifyLogin = function() {
     // To check in the console if the variables are correctly storing the input:
     // console.log($scope.username, $scope.password);
-
     var request = $http({
       url: '/login',
       method: "POST",
