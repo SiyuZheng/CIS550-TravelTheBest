@@ -270,6 +270,33 @@ app.controller('attractionsController', function($scope, $http) {
   
 });
 
+
+app.controller('recommendController', function($scope, $http) {
+  $scope.cuisinerange = ['Thai','Japanese','American','Indian','Chinese','Italian','French','Spanish','Steak','Pizza','N/A'];
+  $scope.attractionrange = ['Museum','Beach','Mountain','Ski','Park','Club','Music','N/A'];
+  $scope.submit = function() {
+    // if ($scope.cuisine === undefined || $scope.cuisine === "N/A"
+    var request = $http({
+      url: '/recommend',
+      method: "POST",
+      data: {
+        'cuisine': $scope.cuisine,
+        'place': $scope.place,
+        'country': $scope.country
+      }
+    })
+    request.success(function(response) {
+      // success
+      console.log(response);
+      $scope.recommend = response.rows;
+    });
+    request.error(function(err) {
+      // failed
+      console.log("error: ", err);
+    });
+  };
+});
+
 app.controller('loginController', function($scope, $http) {
   $scope.verifyLogin = function() {
     // To check in the console if the variables are correctly storing the input:
