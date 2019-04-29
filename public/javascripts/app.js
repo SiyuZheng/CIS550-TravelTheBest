@@ -252,7 +252,7 @@ app.controller('recommendController', function($scope, $http) {
   $scope.cuisinerange = ['Thai','Japanese','American','Indian','Chinese','Italian','French','Spanish','Steak','Pizza','N/A'];
   $scope.attractionrange = ['Museum','Beach','Mountain','Ski','Park','Club','Music','N/A'];
   $scope.submit = function() {
-
+    // if ($scope.cuisine === undefined || $scope.cuisine === "N/A"
     var request = $http({
       url: '/recommend',
       method: "POST",
