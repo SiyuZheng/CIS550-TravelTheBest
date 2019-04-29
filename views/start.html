@@ -12,29 +12,21 @@
     <!-- Custom styles for this template-->
     <link href="/stylesheets/common.css" rel="stylesheet">
     <link href="/stylesheets/dashboard.css" rel="stylesheet">
-    <style>
-      #map {
-        height: 300px;
-        width: 80%;
-      }
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
     <link href="/stylesheets/login.css" rel="stylesheet">
     <link href="/stylesheets/dashboard.css" rel="stylesheet">
   </head>
 
   <body>
-    <div class="heading">Find a flight</div>
+    <!-- <div class="container heading">Find a flight</div> -->
     <div class="container login-container" ng-controller="flightController">
+      <div class = "heading"> Find Flights</div>
       <input type="text" class="input depart" placeholder="Depart City" ng-model="depart" />
       <input type="text" class="input arrival" placeholder="Arrival City" ng-model="arrival" />
-      <button type="button" class="flight-button" name="Flight" ng-click="deleteAllMarkers(); findFlight(); findCityLatLng();">Find a flight</button>
-      <div ng-app="angularjsNodejsTutorial" id="map"></div>  
-        <button type="button" class="search-button" name="searchdest" ng-click="searchdest()">Search for destination</button>
+      <div ng-app="angularjsNodejsTutorial" id="map" ></div>
+      <span class = "span">
+        <button type="button" class="btn btn-success " name="Flight" ng-click="deleteAllMarkers(); findFlight(); findCityLatLng();">Find flights</button>  
+        <button type="button" class="btn btn-success" name="searchdest" ng-click="searchdest()">Search destination</button>
+      </span>
       <div ng-if=flights>
         <table>
           <tr>
