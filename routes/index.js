@@ -139,6 +139,19 @@ router.post('/findCityLatLng', function(req, res) {
   });
 });
 
+router.post('/destination/hotels', function(req, res) {
+  console.log(req.body.destination);
+  var query = "select h.hotel_name, h.address, h.phone "
+ + " from Hotels h"
+ + " where (lower(h.city_name) like \'%"+ req.body.destination + "%\')"
+ + " ORDER BY DBMS_RANDOM.VALUE"
+ + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
 router.post('/destination/restaurants', function(req, res) {
   console.log(req.body.destination);
   var query = "select b.name,b.categories,b.stars, b.review_count"
@@ -158,7 +171,7 @@ router.post('/destination/attractions', function(req, res) {
  + " (SELECT * FROM attractions"
  + " where lower(place) like \'%" + req.body.destination + "%\'"
  + " ORDER BY DBMS_RANDOM.VALUE)"
- + "WHERE  rownum <= 10" ;
+ + "WHERE rownum <= 10" ;
   console.log(query);
   sendQuery(query, function(result) {
     res.json(result);
@@ -190,61 +203,5 @@ router.post('/recommendation', function(req, res) {
     }
   });
 });
-
-router.post('/recMovie', function(req,res) {
-  var query = 'select m.title, g.genre from Movies m join Genres g on g.movie_id = m.id and movie_id != ? and g.genre = ? order by rand() limit 1';
-  var values = [req.body.id, req.body.genre];
-  connection.query(query, values, function(err, rows, fields) {
-    // console.log("rows", rows);
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
-  });
-});
-
-router.post('/bestofmovie', function(req, res) {
-var query = "select g.genre, m.title, m.vote_count from Movies" 
-  + " m join Genres g on g.movie_id = m.id and m.release_year = ? "
-  +"inner join (select genre, max(m2.vote_count) as max_vote_count "
-  +"from Movies m2 join Genres g2 on g2.movie_id = m2.id where m2.release_year = ? "
-  +"group by g2.genre) as groupMaxVote on g.genre = groupMaxVote.genre and m.vote_count = groupMaxVote.max_vote_count;";
-var values = [req.body.year, req.body.year];
-  connection.query(query, values, function(err, rows, fields) {
-    console.log("rows", rows);
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
-  });
-});
-
-router.get('/imdbid', function(req, res) {
-    var query = "SELECT DISTINCT imdb_id FROM Movies order by rand() limit 10"; /* Write your query here and uncomment line 21 in javascripts/app.js*/
-    connection.query(query, function(err, rows, fields) {
-      if (err) console.log('insert error: ', err);
-      else {
-        res.json(rows);
-      }
-    });
-});
-
-// template for GET requests
-/*
-router.get('/routeName/:customParameter', function(req, res) {
-
-  var myData = req.params.customParameter;    // if you have a custom parameter
-  var query = '';
-
-  // console.log(query);
-
-  connection.query(query, function(err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
-  });
-});
-*/
 
 module.exports = router;

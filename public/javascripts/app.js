@@ -9,6 +9,32 @@ var addMarker = function(pos) {
   markers.push(marker);
 }
 
+var clearMarker = function() {
+    for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+      }
+    markers = [];
+}
+
+
+var centerInMap = function(address) {
+  clearMarker();
+  var geocoder = new google.maps.Geocoder();;
+  geocoder.geocode({'address': address}, function(results, status) {
+  if (status === 'OK') {
+    map.setCenter(results[0].geometry.location);
+    var marker = new google.maps.Marker({
+      map: map,
+      position: results[0].geometry.location
+    });
+    markers.push(marker);
+    map.setZoom(15);
+  } else {
+    alert('Geocode was not successful for the following reason: ' + status);
+  }
+  });
+}
+
 app.service('sharedService', function(){
   var categories = []; 
   this.add = function(incategories){
@@ -21,10 +47,7 @@ app.service('sharedService', function(){
 
 app.controller('flightController', function($scope, $http, sharedService) {
   $scope.deleteAllMarkers = function() {
-      for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(null);
-      }
-      markers = [];
+    clearMarker();
   }
   $scope.findFlight = function() {
     var request = $http({
@@ -37,7 +60,6 @@ app.controller('flightController', function($scope, $http, sharedService) {
     })
 
     request.success(function(response) {
-      console.log(response.rows);
       $scope.flights = response.rows;
     });
     request.error(function(err) {
@@ -47,29 +69,8 @@ app.controller('flightController', function($scope, $http, sharedService) {
   };
 
   $scope.searchdest = function() { 
-  //   var request = $http({
-  //     url: '/findbusiness',
-  //     method: "POST",
-  //     data: {
-  //       'city': $scope.arrival.toLowerCase()
-  //     }
-  // })
     localStorage.setItem("city", $scope.arrival.toLowerCase());
     window.location.href = "/destination";
-    // sharedService.add($scope.arrival);
-
-  // request.success(function(response) {
-  //   // success
-  //   if (response) {
-  //     $scope.business = response;
-  //     console.log(response);
-  //     // window.location.href = "http://localhost:8081/destination";
-  //   }
-  // });
-  // request.error(function(err) {
-  //   // failed
-  //   console.log("error: ", err);
-  // });
   };
   
   $scope.findCityLatLng = function() {
@@ -173,6 +174,26 @@ app.controller('destinationController', function($scope, $http, sharedService) {
       });
   }
 
+  $scope.pass3categories = function(){
+    $scope.categories = sharedService.get();
+      var request1 = $http({
+        url: '/destination/hotels',
+        method: "POST",
+        data: {
+          'destination': $scope.categories
+        }
+      })
+      request1.success(function(response) {
+        // success
+        console.log(response);
+        $scope.hotels = response.rows;
+      });
+      request1.error(function(err) {
+        // failed
+        console.log("error: ", err);
+      });
+  }
+
   $scope.findhotels = function() { 
     // localStorage.setItem("city", $scope.arrival.toLowerCase());
     window.location.href = "/hotels";
@@ -193,6 +214,7 @@ app.controller('destinationController', function($scope, $http, sharedService) {
 
   $scope.getCityImages = function() {
     var city = localStorage.getItem("city");
+    city = city.replace(/\s+/g, '-').toLowerCase();
     var request = $http({
       url: "https://api.teleport.org/api/urban_areas/slug:" + city + "/images/",
       method: "GET",
@@ -215,12 +237,13 @@ app.controller('hotelsController', function($scope, $http) {
 });
 
 app.controller('restaurantsController', function($scope, $http, sharedService) {
+  $scope.locateMe = function(addr) {
+    centerInMap(addr);
+  }
   $scope.categories = [];
    $scope.getcategories = function(){
-     // $scope.categories = sharedService.get();
      var city = localStorage.getItem("city");
      sharedService.add(city);
-     // console.log(city) 
    }
   $scope.passcategories = function(){
     $scope.categories = sharedService.get();

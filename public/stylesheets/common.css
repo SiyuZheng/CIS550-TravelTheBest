@@ -23,3 +23,8 @@ body {
     bottom: 20px;
     right: 20px; 
 }
+
+#map {
+  height: 300px;
+  width: 80%;
+}

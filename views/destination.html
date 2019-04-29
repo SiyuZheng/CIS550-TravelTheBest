@@ -23,9 +23,24 @@
     <a ng-init ="getcategories()"></a>
     <a ng-init ="passcategories()"></a>
     <a ng-init ="pass2categories()"></a>
+    <a ng-init ="pass3categories()"></a>
     <div class="jumbotron">
       <div class="h5">Hotels</div>
       <button type="button" class="hotels-button" name="hotels" ng-click="findhotels()">See more about Hotels</button>
+      <div ng-if=hotels>
+        <table>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+          </tr>
+          <tr ng-repeat = "x in hotels">
+            <td>{{ x[0] }}</td>
+            <td>{{ x[1] }}</td>
+            <td>{{ x[2] }}</td>
+          </tr>
+        </table>
+      </div>
     </div>
 
 
