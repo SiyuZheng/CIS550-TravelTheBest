@@ -183,41 +183,41 @@ router.post('/recommend', function(req, res) {
   console.log(req.body.cuisine);
   console.log(req.body.place);
   console.log(req.body.country);
-if ((req.body.cuisine === 'N/A' || req.body.cuisine === undefined) 
-    && (req.body.place !== 'N/A' || req.body.place !== undefined) 
-    && (req.body.country !== 'N/A' || req.body.country !== undefined)){
+if ((req.body.cuisine == 'N/A' || req.body.cuisine == undefined) 
+    && (req.body.place !== 'N/A' && req.body.place !== undefined) 
+    && (req.body.country !== 'N/A' && req.body.country !== undefined)){
     var query = "select distinct city_count.place as place, city_count.c as num_attraction"
  + " from (select place, count(*) c from attractions a where (lower(title) like \'%"+ req.body.place.toLowerCase() + "%\') group by place) city_count, city ci"
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
  + " order by num_attraction desc" ;
-  }
+  };
 
 
-if ((req.body.cuisine !== 'N/A' || req.body.cuisine !== undefined) 
-    && (req.body.place !== 'N/A' || req.body.place !== undefined) 
-    && (req.body.country === 'N/A' || req.body.country === undefined)){
+if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
+    && (req.body.place !== 'N/A' && req.body.place !== undefined) 
+    && (req.body.country == 'N/A' || req.body.country == undefined)){
     var query = "select distinct city_count.place as place, city_count.c as num_attraction, city_count2.c2 num_restaurant"
  + " from (select place, count(*) c from attractions a where (lower(title) like \'%"+ req.body.place.toLowerCase() + "%\') group by place) city_count, city ci,"
  + " (select city, count(*) c2 from Business b where (lower(b.categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count2  "
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.city) = lower(city_count2.city)" 
 + "order by (num_attraction + num_restaurant) desc" ;
-  } 
+  } ;
 
-if ((req.body.cuisine !== 'N/A' || req.body.cuisine !== undefined) 
-    && (req.body.place == 'N/A' || req.body.place === undefined) 
-    && (req.body.country !== 'N/A' || req.body.country !== undefined)){
+if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
+    && (req.body.place == 'N/A' || req.body.place == undefined) 
+    && (req.body.country !== 'N/A' && req.body.country !== undefined)){
     var query = "select distinct city_count.city as place, city_count.c as num_restaurant"
  + " from (select city, count(*) c from business b where (lower(categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count, city ci"
  + " where lower(ci.city) = lower(city_count.city)   "
  + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
  + " order by num_restaurant desc" ;
-  }
+  };
 
-if ((req.body.cuisine !== 'N/A' || req.body.cuisine !== undefined) 
-    && (req.body.place !== 'N/A' || req.body.place !== undefined) 
-    && (req.body.country !== 'N/A' || req.body.country !== undefined)){
+if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
+    && (req.body.place !== 'N/A' && req.body.place !== undefined) 
+    && (req.body.country !== 'N/A' && req.body.country !== undefined)){
     var query = "select distinct city_count.place as place, city_count.c as num_attraction, city_count2.c2 num_restaurant"
  + " from (select place, count(*) c from attractions a where (lower(title) like \'%"+ req.body.place.toLowerCase() + "%\') group by place) city_count, city ci,"
  + " (select city, count(*) c2 from Business b where (lower(b.categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count2  "
@@ -225,7 +225,7 @@ if ((req.body.cuisine !== 'N/A' || req.body.cuisine !== undefined)
  + " and lower(ci.city) = lower(city_count2.city)" 
 + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
 + "order by (num_attraction + num_restaurant) desc" ;
-  }  
+  }  ;
 
   console.log(query);
   sendQuery(query, function(result) {
