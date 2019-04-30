@@ -16,7 +16,7 @@
     <link href="/stylesheets/dashboard.css" rel="stylesheet">
   </head>
 
-  <body>
+  <body id="container">
     <!-- <div class="container heading">Find a flight</div> -->
     <div class="container login-container" ng-controller="flightController">
       <div class = "heading"> Find Flights</div>
@@ -28,7 +28,7 @@
         <button type="button" class="btn btn-success" name="searchdest" ng-click="searchdest()">Search destination</button>
       </span>
       <div ng-if=flights>
-        <table>
+        <table class="table thead-dark white-table">
           <tr>
             <th>Airline_Code</th>
             <th>Flight_Number</th>
@@ -38,7 +38,6 @@
             <td>{{ x[0] }}</td>
             <td>{{ x[1] }}</td>
             <td>{{ x[2] }}</td>
-            }
           </tr>
         </table>
       </div>
