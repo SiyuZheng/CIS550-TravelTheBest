@@ -17,7 +17,7 @@
   <body>
     <div class="heading">Destinations</div>
     <div class="container login-container" ng-controller="destinationController">
-      <div ng-init = "getCityImages()"><img ng-src="{{ imgsrc }}"></div>
+      <div ng-init = "getCityImages()"><img class = "city-img" ng-src="{{ imgsrc }}"></div>
       <div ng-init ="getcategories()"></div>
       <a ng-init ="getcategories()"></a>
     <a ng-init ="getcategories()"></a>
@@ -41,14 +41,15 @@
           </tr>
         </table>
       </div>
+      <button type="button" class="hotels-button btn btn-outline-dark" name="hotels" ng-click="findhotels()">See more about Hotels</button>
     </div>
 
 
     <div class="jumbotron">
       <div class="h5">Restaurants</div>
-      <button type="button" class="restaurants-button" name="restaurants" ng-click="findrestaurants()">See more about Restaurants</button>
+      <button type="button" class="restaurants-button btn btn-outline-dark" name="restaurants" ng-click="findrestaurants()">See more about Restaurants</button>
       <div ng-if=restaurants>
-        <table>
+        <table class="table table-hover table-dark">
           <tr>
             <th>Name</th>
             <th>Categories</th>
@@ -67,9 +68,9 @@
 
     <div class="jumbotron">
       <div class="h5">Attractions</div>
-      <button type="button" class="attractions-button" name="attractions" ng-click="findattractions()">See more about Attractions</button>
+      <button type="button" class="attractions-button btn btn-outline-dark" name="attractions" ng-click="findattractions()">See more about Attractions</button>
       <div ng-if=attractions>
-        <table>
+        <table class="table table-hover table-dark">
           <tr>
             <th>Place</th>
             <th>Address</th>

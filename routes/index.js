@@ -50,27 +50,6 @@ router.get('/start', function(req, res) {
   res.sendFile(path.join(__dirname, '../', 'views', 'start.html'));
 });
 
-router.get('/dashboard', function(req, res) {
-  res.sendFile(path.join(__dirname, '../', 'views', 'dashboard.html'));
-});
-
-router.get('/reference', function(req, res) {
-  res.sendFile(path.join(__dirname, '../', 'views', 'reference.html'));
-});
-
-router.get('/recommendations', function(req, res) {
-  res.sendFile(path.join(__dirname, '../', 'views', 'recommendations.html'));
-});
-
-router.get('/bestof', function(req, res) {
-  res.sendFile(path.join(__dirname, '../', 'views', 'bestof.html'));
-});
-
-router.get('/posters', function(req, res) {
-  res.sendFile(path.join(__dirname, '../', 'views', 'posters.html'));
-});
-
-
 router.get('/destination', function(req, res) {
   res.sendFile(path.join(__dirname, '../', 'views', 'destination.html'));
 });
@@ -98,26 +77,6 @@ router.get('/routeName', function(req, res) {
 });
 */
 
-// Login uses POST request
-router.post('/login', function(req, res) {
-  // use console.log() as print() in case you want to debug, example below:
-  // console.log(req.body); will show the print result in your terminal
-
-  // req.body contains the json data sent from the loginController
-  // e.g. to get username, use req.body.username
-  var query = "INSERT IGNORE INTO User (username, password) VALUES ? "; /* Write your query here and uncomment line 21 in javascripts/app.js*/
-  var values = [[req.body.username, req.body.password]];
-  connection.query(query, [values], function(err, rows, fields) {
-    console.log("rows", rows);
-    if (err) console.log('insert error: ', err);
-    else {
-      res.json({
-        result: 'success'
-      });
-    }
-  });
-});
-
 router.post('/findflight', function(req, res) {
     console.log(req.body.depart);
   var query = "select f.airline, f.airline_id, score from flight f"
@@ -129,6 +88,17 @@ router.post('/findflight', function(req, res) {
  + "\' order by score desc"
 + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY";
   console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/findCityLatLng', function(req, res) {
+  console.log(req.body.city);
+  var query = "select lattitude, longitude from city c where lower(c.city) = \'" 
+  + req.body.city
+ + "\' OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY";
+ console.log(query);
   sendQuery(query, function(result) {
     res.json(result);
   });
