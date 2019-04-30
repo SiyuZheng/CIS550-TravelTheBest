@@ -275,7 +275,22 @@ app.controller('recommendController', function($scope, $http) {
   $scope.cuisinerange = ['Thai','Japanese','American','Indian','Chinese','Italian','French','Spanish','Steak','Pizza','N/A'];
   $scope.attractionrange = ['Museum','Beach','Mountain','Ski','Park','Club','Music','N/A'];
   $scope.submit = function() {
-    // if ($scope.cuisine === undefined || $scope.cuisine === "N/A"
+    if ((($scope.cuisine == 'N/A' || $scope.cuisine == undefined) 
+    && ($scope.place == 'N/A' || $scope.place == undefined) 
+    && ($scope.country == 'N/A' || $scope.country == undefined)) ||
+    (($scope.cuisine !== 'N/A' && $scope.cuisine !== undefined) 
+    && ($scope.place == 'N/A' || $scope.place == undefined) 
+    && ($scope.country == 'N/A' || $scope.country == undefined)) ||
+     (($scope.cuisine == 'N/A' || $scope.cuisine == undefined) 
+    && ($scope.place !== 'N/A' && $scope.place !== undefined) 
+    && ($scope.country == 'N/A' || $scope.country == undefined)) ||
+      (($scope.cuisine == 'N/A' || $scope.cuisine == undefined) 
+    && ($scope.place == 'N/A' || $scope.place == undefined) 
+    && ($scope.country !== 'N/A' && $scope.country !== undefined))){
+      // console.log('select two')
+      alert('Please make at least two selections');
+    }
+    else {
     var request = $http({
       url: '/recommend',
       method: "POST",
@@ -295,6 +310,7 @@ app.controller('recommendController', function($scope, $http) {
       // failed
       console.log("error: ", err);
     });
+    }
   };
 });
 
