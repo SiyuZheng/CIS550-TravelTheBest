@@ -9,6 +9,7 @@ body {
   -o-background-size: cover;
   background-size: cover;
   overflow-y:auto;
+  background-repeat: repeat-y;
 }
 
 #container {
@@ -24,6 +25,7 @@ body {
 .jumbotron {
   background-color: #f3f4f7;
   padding: 2rem;
+  margin: 20px;
 }
 
 .fixedbutton {
