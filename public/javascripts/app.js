@@ -287,6 +287,7 @@ app.controller('recommendController', function($scope, $http) {
     })
     request.success(function(response) {
       // success
+      console.log($scope.cuisine);
       console.log(response);
       $scope.recommend = response.rows;
     });

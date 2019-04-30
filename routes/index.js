@@ -33,10 +33,6 @@ function sendQuery(queryString, callback){
   });
 }
 
-sendQuery("select * from city", function(result){
-  console.log(result);
-});
-
 function doRelease(connection) {
   connection.release(
     function(err) {
@@ -196,7 +192,7 @@ router.post('/recommend', function(req, res) {
   console.log(req.body.cuisine);
   console.log(req.body.place);
   console.log(req.body.country);
-if ((req.body.cuisine === 'N/A' || req.body.cuisine === undefined) 
+if ((req.body.cuisine == 'N/A' || req.body.cuisine === undefined) 
     && (req.body.place !== 'N/A' || req.body.place !== undefined) 
     && (req.body.country !== 'N/A' || req.body.country !== undefined)){
     var query = "select distinct city_count.place as place, city_count.c as num_attraction"
