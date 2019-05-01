@@ -5,6 +5,24 @@ var path = require('path');
 // Connect string to MySQL
 // var mysql = require('mysql');
 var oracledb = require('oracledb');
+var mongodb = require("mongodb");
+
+var addr = "mongodb+srv://cis550proj:cis550proj@cluster0-asvi8.mongodb.net/test?retryWrites=true";
+
+function sendMongoDBQuery(bid, callback) {
+    mongodb.MongoClient.connect(addr, function(error, db){
+        if (error) throw error;
+        console.log("Current database", db.db('tip').databaseName);
+        var tips = db.db("cis550proj").collection("tip");
+        console.log(tips);
+        tips.find({"business_id" : bid}).toArray(function(error, result) {
+          callback(result);
+          console.log(result);
+        });
+    });
+}
+
+sendMongoDBQuery("pSQFynH1VxkfSmehRXlZWw", console.log);
 
 
 function sendQuery(queryString, callback){
