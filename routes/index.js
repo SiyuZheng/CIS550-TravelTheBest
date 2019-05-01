@@ -169,7 +169,7 @@ if ((req.body.cuisine == 'N/A' || req.body.cuisine == undefined)
  + " from (select place, count(*) c from attractions a where (lower(title) like \'%"+ req.body.place.toLowerCase() + "%\') group by place) city_count, city ci"
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
- + " order by num_attraction desc" ;
+ + " order by num_attraction desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   };
 
 
@@ -181,7 +181,7 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " (select city, count(*) c2 from Business b where (lower(b.categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count2  "
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.city) = lower(city_count2.city)" 
-+ "order by (num_attraction + num_restaurant) desc" ;
++ "order by (num_attraction + num_restaurant) desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   } ;
 
 if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
@@ -191,7 +191,7 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " from (select city, count(*) c from business b where (lower(categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count, city ci"
  + " where lower(ci.city) = lower(city_count.city)   "
  + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
- + " order by num_restaurant desc" ;
+ + " order by num_restaurant desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   };
 
 if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
@@ -203,7 +203,7 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.city) = lower(city_count2.city)" 
 + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
-+ "order by (num_attraction + num_restaurant) desc" ;
++ "order by (num_attraction + num_restaurant) desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   }  ;
 
   console.log(query);

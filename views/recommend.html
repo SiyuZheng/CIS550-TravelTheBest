@@ -12,21 +12,34 @@
     <!-- Custom styles for this template-->
     <link href="/stylesheets/common.css" rel="stylesheet">
     <link href="/stylesheets/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   </head>
 
   <body>
     <div class="heading">Recommendations</div>
     <div class="container login-container" ng-controller="recommendController">
     <div class="jumbotron">
-      <div class="h5">Have not decided where to go?</div>
-     What kind of cuisine?:  <select class="form-control" ng-model="cuisine" ng-options="x for x in cuisinerange">
+      <div class="h5" style="text-align:center; font-size: 30px; color: rgb(0,100,0)">Have not decided where to go?</div>
+      <div class="w3-col m12">
+        <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
+          <div class="w3-half">
+     <h5><span class="glyphicon glyphicon-star" aria-hidden="true"></span>What kind of cuisine?:  </h5><select class="form-control" ng-model="cuisine" ng-options="x for x in cuisinerange">
       </select>
-     What kind of attraction?:  <select class="form-control" ng-model="place" ng-options="x for x in attractionrange">
+      </div>
+            <div class="w3-half">
+     <h5>What kind of attraction?:  </h5><select class="form-control" ng-model="place" ng-options="x for x in attractionrange">
       </select>
-      <input type="text" class="input country" placeholder="Country" ng-model="country" />
-      <button type="button" class="submit-button" name="submit" ng-click="submit();">Submit</button>
+      </div>
+          </div>
+      </div>
+      <div class="input-group mb-3">
+  <input type="text" class="form-control" placeholder="Country" aria-label="Country" aria-describedby="basic-addon2" ng-model="country">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" class="submit-button btn btn-info" name="submit" ng-click="submit();">Submit</button>
+  </div>
+</div>
       <div ng-if=recommend>
-        <table>
+        <table class="table thread-dark">
           <tr>
             <th>City</th>
             <th>Attraction_count</th>

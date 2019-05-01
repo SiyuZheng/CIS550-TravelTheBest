@@ -22,7 +22,7 @@
     <div class="jumbotron">
       <div class="h5">Restaurants</div>
       <div ng-if=restaurants>
-        <table>
+        <table class="table thread-dark">
           <tr>
             <th>Name</th>
             <th>Categories</th>
@@ -34,7 +34,7 @@
             <td>{{ x[1] }}</td>
             <td>{{ x[2] }}</td>
             <td>{{ x[3] }}</td>
-            <td><button ng-click = "locateMe(x[0])">LOCATE ME</button></td>
+            <td><button ng-click = "locateMe(x[0])" class="btn btn-success">LOCATE</button></td>
           </tr>
         </table>
       </div>
