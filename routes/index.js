@@ -158,6 +158,32 @@ router.post('/restaurants', function(req, res) {
   });
 });
 
+router.post('/attractions', function(req, res) {
+  console.log(req.body.destination);
+  var query = "SELECT title,address from "
+ + " (SELECT * FROM attractions"
+ + " where lower(place) like \'%" + req.body.destination + "%\'"
+ + " ORDER BY DBMS_RANDOM.VALUE)"
+ + "WHERE rownum <= 10" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/hotels', function(req, res) {
+  console.log(req.body.destination);
+  var query = "select h.hotel_name, h.address, h.phone "
+ + " from Hotels h"
+ + " where (lower(h.city_name) like \'%"+ req.body.destination + "%\')"
+ + " ORDER BY DBMS_RANDOM.VALUE"
+ + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
 router.post('/recommend', function(req, res) {
   console.log(req.body.cuisine);
   console.log(req.body.place);
@@ -209,17 +235,6 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
   console.log(query);
   sendQuery(query, function(result) {
     res.json(result);
-  });
-});
-
-router.post('/recommendation', function(req, res) {
-  var query = 'select genre from Genres where movie_id = ?';
-  var values = [req.body.id];
-  connection.query(query, values, function(err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
   });
 });
 

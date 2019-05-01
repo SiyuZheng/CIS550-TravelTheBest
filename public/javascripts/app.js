@@ -232,8 +232,34 @@ app.controller('destinationController', function($scope, $http, sharedService) {
   }
 });
 
-app.controller('hotelsController', function($scope, $http) {
-
+app.controller('hotelsController', function($scope, $http, sharedService) {
+  $scope.locateMe = function(addr) {
+    centerInMap(addr);
+  }
+  $scope.categories = [];
+   $scope.getcategories = function(){
+     var city = localStorage.getItem("city");
+     sharedService.add(city);
+   }
+  $scope.passcategories = function(){
+    $scope.categories = sharedService.get();
+      var request1 = $http({
+        url: '/hotels',
+        method: "POST",
+        data: {
+          'destination': $scope.categories
+        }
+      })
+      request1.success(function(response) {
+        // success
+        console.log(response);
+        $scope.hotels = response.rows;
+      });
+      request1.error(function(err) {
+        // failed
+        console.log("error: ", err);
+      });
+  }
 });
 
 app.controller('restaurantsController', function($scope, $http, sharedService) {
@@ -266,8 +292,34 @@ app.controller('restaurantsController', function($scope, $http, sharedService) {
   }
 });
 
-app.controller('attractionsController', function($scope, $http) {
-  
+app.controller('attractionsController', function($scope, $http, sharedService) {
+  $scope.locateMe = function(addr) {
+    centerInMap(addr);
+  }
+  $scope.categories = [];
+   $scope.getcategories = function(){
+     var city = localStorage.getItem("city");
+     sharedService.add(city);
+   }
+  $scope.passcategories = function(){
+    $scope.categories = sharedService.get();
+      var request1 = $http({
+        url: '/attractions',
+        method: "POST",
+        data: {
+          'destination': $scope.categories
+        }
+      })
+      request1.success(function(response) {
+        // success
+        console.log(response);
+        $scope.attractions = response.rows;
+      });
+      request1.error(function(err) {
+        // failed
+        console.log("error: ", err);
+      });
+  }
 });
 
 
@@ -314,56 +366,6 @@ app.controller('recommendController', function($scope, $http) {
   };
 });
 
-app.controller('loginController', function($scope, $http) {
-  $scope.verifyLogin = function() {
-    // To check in the console if the variables are correctly storing the input:
-    // console.log($scope.username, $scope.password);
-    var request = $http({
-      url: '/login',
-      method: "POST",
-      data: {
-        'username': $scope.username,
-        'password': $scope.password
-      }
-    })
-
-    request.success(function(response) {
-      // success
-      console.log(response);
-      if (response.result === "success") {
-        // After you've written the INSERT query in routes/index.js, uncomment the following line
-        window.location.href = "http://localhost:8081/dashboard"
-      }
-    });
-    request.error(function(err) {
-      // failed
-      console.log("error: ", err);
-    });
-
-  };
-});
-
-app.controller('userController', function($scope, $http) {
-  var request = $http({
-      url: '/user',
-      method: "GET"
-  })
-
-  request.success(function(response) {
-    // success
-    if (response) {
-      $scope.names = response;
-      console.log(response);
-    }
-  });
-  request.error(function(err) {
-    // failed
-    console.log("error: ", err);
-  });
-  $scope.getAllUser = function() {
-    return $scope.names;
-  }
-});
 
 
 // Template for adding a controller
