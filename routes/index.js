@@ -158,6 +158,32 @@ router.post('/restaurants', function(req, res) {
   });
 });
 
+router.post('/attractions', function(req, res) {
+  console.log(req.body.destination);
+  var query = "SELECT title,address from "
+ + " (SELECT * FROM attractions"
+ + " where lower(place) like \'%" + req.body.destination + "%\'"
+ + " ORDER BY DBMS_RANDOM.VALUE)"
+ + "WHERE rownum <= 10" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/hotels', function(req, res) {
+  console.log(req.body.destination);
+  var query = "select h.hotel_name, h.address, h.phone "
+ + " from Hotels h"
+ + " where (lower(h.city_name) like \'%"+ req.body.destination + "%\')"
+ + " ORDER BY DBMS_RANDOM.VALUE"
+ + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
 router.post('/recommend', function(req, res) {
   console.log(req.body.cuisine);
   console.log(req.body.place);
@@ -169,7 +195,7 @@ if ((req.body.cuisine == 'N/A' || req.body.cuisine == undefined)
  + " from (select place, count(*) c from attractions a where (lower(title) like \'%"+ req.body.place.toLowerCase() + "%\') group by place) city_count, city ci"
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
- + " order by num_attraction desc" ;
+ + " order by num_attraction desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   };
 
 
@@ -181,7 +207,7 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " (select city, count(*) c2 from Business b where (lower(b.categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count2  "
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.city) = lower(city_count2.city)" 
-+ "order by (num_attraction + num_restaurant) desc" ;
++ "order by (num_attraction + num_restaurant) desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   } ;
 
 if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
@@ -191,7 +217,7 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " from (select city, count(*) c from business b where (lower(categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count, city ci"
  + " where lower(ci.city) = lower(city_count.city)   "
  + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
- + " order by num_restaurant desc" ;
+ + " order by num_restaurant desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   };
 
 if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
@@ -203,23 +229,12 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.city) = lower(city_count2.city)" 
 + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
-+ "order by (num_attraction + num_restaurant) desc" ;
++ "order by (num_attraction + num_restaurant) desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   }  ;
 
   console.log(query);
   sendQuery(query, function(result) {
     res.json(result);
-  });
-});
-
-router.post('/recommendation', function(req, res) {
-  var query = 'select genre from Genres where movie_id = ?';
-  var values = [req.body.id];
-  connection.query(query, values, function(err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
   });
 });
 
