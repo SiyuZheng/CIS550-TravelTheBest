@@ -27,7 +27,7 @@
             <th>Name</th>
             <th>Categories</th>
             <th>Stars</th>
-            <th>Review_Count</th>
+            <th>Popularity</th>
           </tr>
           <tr ng-repeat = "x in restaurants">
             <td>{{ x[0] }}</td>
@@ -35,12 +35,31 @@
             <td>{{ x[2] }}</td>
             <td>{{ x[3] }}</td>
             <td><button ng-click = "locateMe(x[0])" class="btn btn-success">LOCATE</button></td>
+            <td><button ng-click = "findTip(x[4])" class="btn btn-success">Reviews</button></td>
           </tr>
         </table>
+      </div>
+      <div ng-if=tips>
+        <table class="table thread-dark">
+          <tr>
+            <th>Reviews</th>
+          </tr>
+          <tr ng-repeat = "y in tips">
+            <td>{{ y.text }}</td>
+            <td>{{ y.date }}</td>
+          </tr>
+        </table>
+              <div class="input-group mb-3">
+  <input type="text" class="form-control" placeholder="Review" aria-label="Review" aria-describedby="basic-addon2" ng-model="review">
+  <div class="input-group-append">
+    <button class="btn btn-outline-secondary" type="button" class="submit-button btn btn-info" name="submit" ng-click="addTip(review);">Post</button>
+  </div>
+<!--   <h1>{{review}}</h1> -->
       </div>
     </div>
     <div ng-app="angularjsNodejsTutorial" id="map"></div>  
   </div>
+</div>
 
     <!-- Include these before the end of body tag in every HTML file -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

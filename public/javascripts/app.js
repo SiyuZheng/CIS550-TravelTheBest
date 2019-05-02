@@ -16,6 +16,13 @@ var clearMarker = function() {
     markers = [];
 }
 
+var checkLessThanTen = function(num) {
+  if (num.length < 2) {
+    return "0" + num;
+  }
+  return num;
+}
+
 
 var centerInMap = function(address) {
   clearMarker();
@@ -263,6 +270,54 @@ app.controller('hotelsController', function($scope, $http, sharedService) {
 });
 
 app.controller('restaurantsController', function($scope, $http, sharedService) {
+  $scope.findTip = function(id) {
+    console.log(id);
+    $scope.id = id;
+    var request = $http({
+        url: '/tip',
+        method: "POST",
+        data: {
+          'id': id
+        }
+      });
+    request.success(function(response) {
+        // success
+        console.log(response);
+        $scope.tips = response;
+        console.log(response[0].text);
+    });
+    request.error(function(err) {
+        // failed
+        console.log("error: ", err);
+    });
+  }
+  $scope.addTip = function(review) {
+    var currentdate = new Date(); 
+    var date = currentdate.getFullYear() + "-"
+                + checkLessThanTen((currentdate.getMonth() + 1))  + "-" 
+                + checkLessThanTen(currentdate.getDate()) + " "  
+                + checkLessThanTen(currentdate.getHours()) + ":"  
+                + checkLessThanTen(currentdate.getMinutes()) + ":" 
+                + checkLessThanTen(currentdate.getSeconds());
+    var request = $http({
+        url: '/addtip',
+        method: "POST",
+        data: {
+          'business_id': $scope.id,
+          'text': review,
+          'date': date
+        }
+      });
+      request.success(function(response) {
+        // success
+        console.log("success");
+      });
+      request.error(function(err) {
+          // failed
+          console.log("error: ", err);
+      });
+      $scope.findTip($scope.id);
+  }
   $scope.locateMe = function(addr) {
     centerInMap(addr);
   }
@@ -365,21 +420,3 @@ app.controller('recommendController', function($scope, $http) {
     }
   };
 });
-
-
-
-// Template for adding a controller
-/*
-app.controller('dummyController', function($scope, $http) {
-  // normal variables
-  var dummyVar1 = 'abc';
-
-  // Angular scope variables
-  $scope.dummyVar2 = 'abc';
-
-  // Angular function
-  $scope.dummyFunction = function() {
-
-  };
-});
-*/

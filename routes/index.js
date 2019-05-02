@@ -12,17 +12,25 @@ var addr = "mongodb+srv://cis550proj:cis550proj@cluster0-asvi8.mongodb.net/test?
 function sendMongoDBQuery(bid, callback) {
     mongodb.MongoClient.connect(addr, function(error, db){
         if (error) throw error;
-        console.log("Current database", db.db('tip').databaseName);
         var tips = db.db("cis550proj").collection("tip");
-        console.log(tips);
-        tips.find({"business_id" : bid}).toArray(function(error, result) {
+        tips.find({"business_id" : bid}).sort({date: -1}).limit(5).toArray(function(error, result) {
           callback(result);
-          console.log(result);
         });
     });
 }
 
-sendMongoDBQuery("pSQFynH1VxkfSmehRXlZWw", console.log);
+function insertToMongoDB(review, callback) {
+    mongodb.MongoClient.connect(addr, function(error, db){
+        if (error) throw error;
+        var tips = db.db("cis550proj").collection("tip");
+        tips.insert(review, function(err, res){
+        if(err) throw err;
+          console.log('data inserted');
+          console.log(res);
+        db.close();
+      });
+    });
+}
 
 
 function sendQuery(queryString, callback){
@@ -165,7 +173,7 @@ router.post('/destination/attractions', function(req, res) {
 
 router.post('/restaurants', function(req, res) {
   console.log(req.body.destination);
-  var query = "select b.name,b.categories,b.stars, b.review_count"
+  var query = "select b.name,b.categories,b.stars, b.review_count, b.business_id"
  + " from Business b"
  + " where (b.stars>=4 and lower(b.city) like \'%"+ req.body.destination + "%\') and (upper(b.categories) like '%RESTAURANT%' or upper(b.categories) like '%FOOD%')"
  + " order by b.review_count desc"
@@ -253,6 +261,22 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
   console.log(query);
   sendQuery(query, function(result) {
     res.json(result);
+  });
+});
+
+router.post('/tip', function(req, res) {
+  var id = req.body.id;
+  sendMongoDBQuery(id, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/addtip', function(req, res) {
+  var insert = {"user_id" : "jdoQ5-Tc-YRb0bmV6QR8Lw","business_id":req.body.business_id, "text":req.body.text, "date": req.body.date,
+"compliment_count" : 0};
+    console.log(insert);
+  insertToMongoDB(insert, function(result) {
+        res.json(result);
   });
 });
 
