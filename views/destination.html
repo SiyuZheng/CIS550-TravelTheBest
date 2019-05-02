@@ -15,9 +15,25 @@
   </head>
 
   <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <span class="navbar-brand center">Travel The Best</span>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="/start">Start</a>
+          <a class="nav-item nav-link" href="/recommend">Recommend</a>
+        </div>
+      </div>
+    </nav>
     <div class="heading">Destinations</div>
     <div class="container login-container" ng-controller="destinationController">
-      <div ng-init = "getCityImages()"><img class = "city-img" ng-src="{{ imgsrc }}"></div>
+      <div ng-init = "getCityImages()">
+        <div class="imgcontainer">
+        <img class = "city-img" ng-src="{{ imgsrc }}">
+          <div class="text-block"> 
+                {{ categories }}
+            </div>
+          </div>
+      </div>
       <div ng-init ="getcategories()"></div>
       <a ng-init ="getcategories()"></a>
     <a ng-init ="getcategories()"></a>
