@@ -15,22 +15,56 @@
   </head>
 
   <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <span class="navbar-brand center">Travel The Best</span>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link active" href="/start">Start</a>
+          <a class="nav-item nav-link" href="/recommend">Recommend</a>
+        </div>
+      </div>
+    </nav>
     <div class="heading">Hotels</div>
     <div class="container login-container" ng-controller="hotelsController">
     <a ng-init ="getcategories()"></a>
     <a ng-init ="passcategories()"></a>
-    <a ng-init ="pass2categories()"></a>
     <div class="jumbotron">
       <div class="h5">Hotels</div>
+      <div ng-if=hotels>
+        <table class="table thread-dark">
+          <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+          </tr>
+          <tr ng-repeat = "x in hotels">
+            <td>{{ x[0] }}</td>
+            <td>{{ x[1] }}</td>
+            <td>{{ x[2] }}</td>
+            <td><button ng-click = "locateMe(x[0])" class="btn btn-success">LOCATE</button></td>
+          </tr>
+        </table>
+      </div>
     </div>
-
-    </div>
+    <div ng-app="angularjsNodejsTutorial" id="map"></div>  
+  </div>
 
     <!-- Include these before the end of body tag in every HTML file -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script>
+      var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: new google.maps.LatLng(0, 0),
+          zoom: 1
+        });
+      };
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSOaLepF_xfq-6q61UzJ_Mpd8c7i8N-E8&callback=initMap&language=en&region=US"
+  type="text/javascript"></script>
   </body>
 
 </html>

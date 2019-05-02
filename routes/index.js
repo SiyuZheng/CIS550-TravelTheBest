@@ -5,6 +5,32 @@ var path = require('path');
 // Connect string to MySQL
 // var mysql = require('mysql');
 var oracledb = require('oracledb');
+var mongodb = require("mongodb");
+
+var addr = "mongodb+srv://cis550proj:cis550proj@cluster0-asvi8.mongodb.net/test?retryWrites=true";
+
+function sendMongoDBQuery(bid, callback) {
+    mongodb.MongoClient.connect(addr, function(error, db){
+        if (error) throw error;
+        var tips = db.db("cis550proj").collection("tip");
+        tips.find({"business_id" : bid}).sort({date: -1}).limit(5).toArray(function(error, result) {
+          callback(result);
+        });
+    });
+}
+
+function insertToMongoDB(review, callback) {
+    mongodb.MongoClient.connect(addr, function(error, db){
+        if (error) throw error;
+        var tips = db.db("cis550proj").collection("tip");
+        tips.insert(review, function(err, res){
+        if(err) throw err;
+          console.log('data inserted');
+          console.log(res);
+        db.close();
+      });
+    });
+}
 
 
 function sendQuery(queryString, callback){
@@ -147,10 +173,36 @@ router.post('/destination/attractions', function(req, res) {
 
 router.post('/restaurants', function(req, res) {
   console.log(req.body.destination);
-  var query = "select b.name,b.categories,b.stars, b.review_count"
+  var query = "select b.name,b.categories,b.stars, b.review_count, b.business_id"
  + " from Business b"
  + " where (b.stars>=4 and lower(b.city) like \'%"+ req.body.destination + "%\') and (upper(b.categories) like '%RESTAURANT%' or upper(b.categories) like '%FOOD%')"
  + " order by b.review_count desc"
+ + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/attractions', function(req, res) {
+  console.log(req.body.destination);
+  var query = "SELECT title,address from "
+ + " (SELECT * FROM attractions"
+ + " where lower(place) like \'%" + req.body.destination + "%\'"
+ + " ORDER BY DBMS_RANDOM.VALUE)"
+ + "WHERE rownum <= 10" ;
+  console.log(query);
+  sendQuery(query, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/hotels', function(req, res) {
+  console.log(req.body.destination);
+  var query = "select h.hotel_name, h.address, h.phone "
+ + " from Hotels h"
+ + " where (lower(h.city_name) like \'%"+ req.body.destination + "%\')"
+ + " ORDER BY DBMS_RANDOM.VALUE"
  + " OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   console.log(query);
   sendQuery(query, function(result) {
@@ -169,7 +221,7 @@ if ((req.body.cuisine == 'N/A' || req.body.cuisine == undefined)
  + " from (select place, count(*) c from attractions a where (lower(title) like \'%"+ req.body.place.toLowerCase() + "%\') group by place) city_count, city ci"
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
- + " order by num_attraction desc" ;
+ + " order by num_attraction desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   };
 
 
@@ -181,7 +233,7 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " (select city, count(*) c2 from Business b where (lower(b.categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count2  "
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.city) = lower(city_count2.city)" 
-+ "order by (num_attraction + num_restaurant) desc" ;
++ "order by (num_attraction + num_restaurant) desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   } ;
 
 if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
@@ -191,7 +243,7 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " from (select city, count(*) c from business b where (lower(categories) like \'%"+ req.body.cuisine.toLowerCase() + "%\') group by city) city_count, city ci"
  + " where lower(ci.city) = lower(city_count.city)   "
  + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
- + " order by num_restaurant desc" ;
+ + " order by num_restaurant desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   };
 
 if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined) 
@@ -203,7 +255,7 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
  + " where lower(ci.city) = lower(city_count.place) "
  + " and lower(ci.city) = lower(city_count2.city)" 
 + " and lower(ci.country) = \'"+ req.body.country.toLowerCase() + "\'"
-+ "order by (num_attraction + num_restaurant) desc" ;
++ "order by (num_attraction + num_restaurant) desc OFFSET 0 ROWS FETCH NEXT 5 ROWS ONLY" ;
   }  ;
 
   console.log(query);
@@ -212,14 +264,19 @@ if ((req.body.cuisine !== 'N/A' && req.body.cuisine !== undefined)
   });
 });
 
-router.post('/recommendation', function(req, res) {
-  var query = 'select genre from Genres where movie_id = ?';
-  var values = [req.body.id];
-  connection.query(query, values, function(err, rows, fields) {
-    if (err) console.log(err);
-    else {
-      res.json(rows);
-    }
+router.post('/tip', function(req, res) {
+  var id = req.body.id;
+  sendMongoDBQuery(id, function(result) {
+    res.json(result);
+  });
+});
+
+router.post('/addtip', function(req, res) {
+  var insert = {"user_id" : "jdoQ5-Tc-YRb0bmV6QR8Lw","business_id":req.body.business_id, "text":req.body.text, "date": req.body.date,
+"compliment_count" : 0};
+    console.log(insert);
+  insertToMongoDB(insert, function(result) {
+        res.json(result);
   });
 });
 
